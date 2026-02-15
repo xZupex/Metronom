@@ -3,15 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hallo Welt App</title>
+    <title>Metronom</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Hallo Welt! 👋</h1>
-        <p>Willkommen zu deiner TypeScript App</p>
-        <button id="greetBtn">Grüße mich</button>
-        <p id="output"></p>
+        <h1>🎵 Metronom</h1>
+
+        <div class="metronom-display">
+            <div class="bpm-value">
+                <span id="bpmDisplay">120</span>
+                <span class="bpm-label">BPM</span>
+            </div>
+            <div id="status" class="status">⏹️ Gestoppt</div>
+        </div>
+
+        <div class="beat-display" id="beatIndicators">
+            <div class="beat-indicator accent"></div>
+            <div class="beat-indicator"></div>
+            <div class="beat-indicator"></div>
+            <div class="beat-indicator"></div>
+        </div>
+
+        <div class="controls">
+            <div class="time-signature-select">
+                <label for="timeSignatureSelect">Taktart:</label>
+                <select id="timeSignatureSelect" class="dropdown">
+                    <option value="1/4">1/4</option>
+                    <option value="2/4">2/4</option>
+                    <option value="3/4">3/4</option>
+                    <option value="4/4" selected>4/4</option>
+                    <option value="3/8">3/8</option>
+                    <option value="6/8">6/8</option>
+                    <option value="12/8">12/8</option>
+                    <option value="5/4">5/4</option>
+                    <option value="7/8">7/8</option>
+                    <option value="Triplet">Triplet</option>
+                </select>
+            </div>
+
+            <div class="sound-select">
+                <label for="soundSelect">Sound:</label>
+                <select id="soundSelect" class="dropdown">
+                    <option value="beep" selected>Beep</option>
+                    <option value="ping">Ping</option>
+                    <option value="bell">Bell</option>
+                    <option value="click">Click</option>
+                </select>
+            </div>
+
+            <div class="bpm-slider">
+                <label for="bpmInput">Tempo (BPM):</label>
+                <input type="range" id="bpmInput" min="40" max="300" value="120" class="slider">
+                <span class="bpm-value-inline" id="bpmValue">120</span>
+            </div>
+
+            <div class="buttons">
+                <button id="playBtn" class="btn btn-play">▶️ Start</button>
+                <button id="stopBtn" class="btn btn-stop">⏹️ Stop</button>
+            </div>
+        </div>
     </div>
     <script src="index.js"></script>
 </body>
