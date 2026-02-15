@@ -1,66 +1,104 @@
-# TypeScript App
+# 🎵 Metronom App
 
-Eine moderne TypeScript Anwendung mit vollständigem Setup.
+Eine moderne TypeScript Metronom Anwendung mit verschiedenen Taktarten und Sound-Optionen.
 
-## 📦 Installation
+## 🎯 Features
+
+- ✅ Verschiedene Taktarten: 1/4, 2/4, 3/4, 4/4, 3/8, 6/8, 12/8, 5/4, 7/8, Triplet
+- 🔊 4 verschiedene Sound-Optionen: Beep, Ping, Bell, Click
+- 📊 Visuelle Beat-Indikatoren
+- ⚡ Echtzeitänderungen während des Abspielens
+- 🎚️ Tempo von 40-300 BPM einstellbar
+- 🎨 Responsive Design
+
+## 🚀 Live Demo
+
+Die App läuft live auf: **https://USERNAME.github.io/metronom-app/**
+
+(Ersetze USERNAME mit deinem GitHub-Benutzernamen)
+
+## 💻 Lokal Entwickeln
+
+### Voraussetzungen
+- Node.js (v20+)
+- npm (v9+)
+
+### Installation
 
 ```bash
-npm install
+# Dependencies installieren
+npm install --legacy-peer-deps
+
+# Development Server starten (Port 8000)
+npm run dev
 ```
 
-## 🚀 Scripts
+### Befehle
 
-- **`npm run dev`** - Startet die App mit Hot-Reload für Development
-- **`npm run build`** - Kompiliert TypeScript zu JavaScript
-- **`npm start`** - Startet die kompilierte App
-- **`npm run lint`** - Führt ESLint aus
-- **`npm run format`** - Formatiert Code mit Prettier
-- **`npm test`** - Führt Tests aus
+- **`npm run dev`** - Development Server mit Hot-Reload
+- **`npm run build`** - Produktions-Build
+- **`npm run lint`** - Code-Qualität prüfen
+- **`npm run format`** - Code formatieren
+- **`npm test`** - Tests ausführen
 
-## 📂 Projektstruktur
+## 🛠️ Technologie
+
+- **TypeScript** - Typsicherheit
+- **Web Audio API** - Soundgenerierung
+- **esbuild** - Schnelles Bundling
+- **ESLint & Prettier** - Code-Qualität
+- **Jest** - Testing Framework
+
+## 📁 Projektstruktur
 
 ```
 .
-├── src/              # Source Code
-│   ├── index.ts      # Entry Point
-│   └── __tests__/    # Test Dateien
-├── dist/             # Kompilierter JavaScript Code
-├── package.json      # Dependencies & Scripts
-├── tsconfig.json     # TypeScript Konfiguration
-├── jest.config.js    # Testing Konfiguration
-├── .eslintrc.json    # Linting Konfiguration
-└── .prettierrc        # Formatierungs-Konfiguration
+├── src/
+│   ├── index.ts         # Hauptlogik (Metronom Klasse)
+│   ├── index.html       # HTML Template
+│   ├── styles.css       # Styling
+│   └── __tests__/       # Tests
+├── dist/                # Compiled Output (wird deployed)
+├── .github/workflows/   # GitHub Actions
+├── package.json         # Dependencies & Scripts
+└── tsconfig.json        # TypeScript Config
 ```
 
-## 🛠️ Entwicklung
+## 🌐 GitHub Pages Deployment
 
-### Neue Dateien erstellen
+Die App wird automatisch deployed wenn du Code zu `main` pushst:
 
-Erstelle neue TypeScript Dateien in `src/`:
+```bash
+# 1. Repository klonen
+git clone https://github.com/USERNAME/metronom-app.git
 
-```typescript
-// src/utils.ts
-export const add = (a: number, b: number): number => a + b;
+# 2. Dependencies installieren
+cd metronom-app
+npm install --legacy-peer-deps
+
+# 3. Änderungen machen und committen
+git add .
+git commit -m "Feature: xyz"
+
+# 4. Zu GitHub pushen
+git push origin main
 ```
 
-### Tests schreiben
+GitHub Actions baut automatisch die App und deployed sie zu GitHub Pages! ✨
 
-```typescript
-// src/__tests__/utils.test.ts
-import { add } from '../utils';
+## 🔧 Anpassungen
 
-describe('add function', () => {
-  it('should add two numbers', () => {
-    expect(add(2, 3)).toBe(5);
-  });
-});
-```
+Wenn du eine Custom Domain verwenden möchtest:
 
-## ✨ Tipps
+1. Gehe zu Repository Settings → Pages
+2. Unter "Custom domain" gib deine Domain ein
+3. Aktualisiere deine DNS-Records (siehe GitHub Pages Dokumentation)
 
-- TypeScript wird in `dist/` kompiliert
-- Verwende `npm run dev` während der Entwicklung für Live-Reload
-- Führe `npm run lint` aus, um Code-Qualität zu verbessern
-- Schreibe Tests für deine Funktionen
+## 📝 Lizenz
 
-Viel Erfolg! 🎉
+MIT
+
+---
+
+**Viel Spaß mit deinem Metronom! 🎶**
+

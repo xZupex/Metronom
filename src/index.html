@@ -8,11 +8,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎵 Metronom</h1>
-
         <div class="metronom-display">
             <div class="bpm-value">
-                <span id="bpmDisplay">120</span>
+                <span id="bpmDisplay" contenteditable="true" inputmode="numeric" aria-label="BPM bearbeiten" title="Klicke hier, um BPM frei einzugeben">120</span>
                 <span class="bpm-label">BPM</span>
             </div>
             <div id="status" class="status">⏹️ Gestoppt</div>
@@ -54,8 +52,7 @@
 
             <div class="bpm-slider">
                 <label for="bpmInput">Tempo (BPM):</label>
-                <input type="range" id="bpmInput" min="40" max="300" value="120" class="slider">
-                <span class="bpm-value-inline" id="bpmValue">120</span>
+                <input type="range" id="bpmInput" min="40" max="500" value="120" class="slider">
             </div>
 
             <div class="buttons">
@@ -67,4 +64,3 @@
     <script src="index.js"></script>
 </body>
 </html>
-

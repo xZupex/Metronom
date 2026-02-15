@@ -6,7 +6,10 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* 3-tone sunburst: bright center, warm mid, dark outer rim (like a Stratocaster sunburst) */
+    background: radial-gradient(circle at center, #ffd77a 0%, #ffc05a 12%, #ff8a2b 30%, #c24722 55%, #2b1b10 100%);
+    /* subtle vignette to deepen the rim */
+    background-blend-mode: normal;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -41,7 +44,8 @@ h1 {
 }
 
 .metronom-display {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* already sunburst-like, keep strong warm gradient for the control panel */
+    background: linear-gradient(135deg, #ffd77a 0%, #ffc05a 20%, #ff8a2b 50%, #c24722 85%);
     color: white;
     padding: 40px;
     border-radius: 15px;
@@ -67,18 +71,13 @@ h1 {
 
 .bpm-label {
     font-size: 1.2em;
-    opacity: 0.9;
+    opacity: 0.95;
     margin-top: 10px;
 }
 
 .status {
     font-size: 1.5em;
     font-weight: bold;
-    animation: blink 1s infinite;
-}
-
-.status.running {
-    animation: blink 0.6s infinite;
 }
 
 @keyframes blink {
@@ -98,19 +97,47 @@ h1 {
     min-height: 40px;
 }
 
+/* make non-accent beats warm/cream, accent beats match sunburst accent */
 .beat-indicator {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #e0e0e0;
-    transition: all 0.1s;
-    border: 2px solid #999;
+    background: #fff3d6; /* pale cream */
+    transition: all 0.12s ease;
+    border: 2px solid #d9c39a; /* soft warm border */
 }
 
 .beat-indicator.accent {
-    background: #667eea;
-    border-color: #667eea;
-    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+    background: #c24722; /* deep sunburst accent (reddish-orange) */
+    border-color: #8b2e17;
+    box-shadow: 0 0 10px rgba(194, 71, 34, 0.28);
+}
+
+/* Active beat visual feedback */
+@keyframes beatPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(194, 71, 34, 0);
+    }
+    30% {
+        transform: scale(1.25);
+        box-shadow: 0 8px 20px rgba(194, 71, 34, 0.32);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(194, 71, 34, 0);
+    }
+}
+
+.beat-indicator.active {
+    animation: beatPulse 280ms cubic-bezier(.22,1,.36,1);
+    /* ensure active accent is more pronounced */
+    border-color: #8b2e17;
+}
+
+.beat-indicator.accent.active {
+    background: #ff7043; /* brighter accent on beat */
+    box-shadow: 0 10px 30px rgba(255, 110, 70, 0.36);
 }
 
 .controls {
@@ -126,7 +153,7 @@ h1 {
 
 .time-signature-select label {
     font-size: 1.1em;
-    color: #333;
+    color: #2b1b10; /* dark rim color for labels */
     font-weight: bold;
     text-align: left;
 }
@@ -140,7 +167,7 @@ h1 {
 
 .sound-select label {
     font-size: 1.1em;
-    color: #333;
+    color: #2b1b10;
     font-weight: bold;
     text-align: left;
 }
@@ -148,24 +175,24 @@ h1 {
 .dropdown {
     padding: 12px 15px;
     font-size: 1em;
-    border: 2px solid #ddd;
+    border: 2px solid #e6d6b0;
     border-radius: 8px;
     background: white;
-    color: #333;
+    color: #2b1b10;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.25s;
     font-weight: 500;
 }
 
 .dropdown:hover {
-    border-color: #667eea;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    border-color: #ff8a2b;
+    box-shadow: 0 2px 8px rgba(255, 138, 43, 0.14);
 }
 
 .dropdown:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #ff8a2b;
+    box-shadow: 0 0 0 4px rgba(255, 138, 43, 0.08);
 }
 
 .dropdown:disabled {
@@ -181,11 +208,12 @@ h1 {
     gap: 15px;
 }
 
+/* slider track: warm gradient */
 .slider {
     width: 100%;
     height: 8px;
     border-radius: 5px;
-    background: #ddd;
+    background: linear-gradient(90deg, #ffc05a 0%, #ff8a2b 60%, #c24722 100%);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
@@ -198,37 +226,46 @@ h1 {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: radial-gradient(circle at center, #ffd77a 0%, #ffc05a 12%, #ff8a2b 30%, #c24722 55%, #2b1b10 100%);
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    transition: all 0.18s;
 }
 
 .slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+    transform: scale(1.12);
+    box-shadow: 0 6px 18px rgba(255, 138, 43, 0.28);
 }
 
 .slider::-moz-range-thumb {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: radial-gradient(circle at center, #ffd77a 0%, #ffc05a 12%, #ff8a2b 30%, #c24722 55%, #2b1b10 100%);
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
     border: none;
-    transition: all 0.2s;
+    transition: all 0.18s;
 }
 
 .slider::-moz-range-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+    transform: scale(1.12);
+    box-shadow: 0 6px 18px rgba(255, 138, 43, 0.28);
 }
 
 .bpm-value-inline {
     font-size: 1.2em;
     color: #667eea;
     font-weight: bold;
+}
+
+.bpm-value span[contenteditable] {
+    outline: none;
+}
+
+.bpm-value span[contenteditable]:focus {
+    box-shadow: 0 0 0 4px rgba(255, 200, 120, 0.12);
+    border-radius: 6px;
 }
 
 .buttons {
@@ -250,13 +287,13 @@ h1 {
 }
 
 .btn-play {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: radial-gradient(circle at center, #ffd77a 0%, #ffc05a 12%, #ff8a2b 30%, #c24722 55%, #2b1b10 100%);
     color: white;
 }
 
 .btn-play:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 25px rgba(255, 138, 43, 0.28);
 }
 
 .btn-play:active:not(:disabled) {
@@ -269,13 +306,13 @@ h1 {
 }
 
 .btn-stop {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: radial-gradient(circle at center, #ffd77a 0%, #ffc05a 12%, #ff8a2b 30%, #c24722 55%, #2b1b10 100%);
     color: white;
 }
 
 .btn-stop:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+    box-shadow: 0 10px 25px rgba(194, 71, 34, 0.28);
 }
 
 .btn-stop:active:not(:disabled) {
@@ -325,4 +362,3 @@ h1 {
         font-size: 1em;
     }
 }
-

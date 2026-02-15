@@ -83,11 +83,12 @@ class Metronom {
   private scheduleNotes(): void {
     while (this.nextNoteTime < this.audioContext.currentTime + this.scheduleAheadTime) {
       this.scheduleNote(this.nextNoteTime, this.currentBeat);
-      this.nextNoteTime += 60.0 / this.bpm / (this.timeSignature.noteValue / 4);
-      this.currentBeat = (this.currentBeat + 1) % this.timeSignature.beats;
+      // Call the beat-change callback for the beat we just scheduled (so visuals align with the sound)
       if (this.onBeatChange) {
         this.onBeatChange(this.currentBeat);
       }
+      this.nextNoteTime += 60.0 / this.bpm / (this.timeSignature.noteValue / 4);
+      this.currentBeat = (this.currentBeat + 1) % this.timeSignature.beats;
     }
   }
 
@@ -131,7 +132,7 @@ class Metronom {
   }
 
   setBPM(bpm: number): void {
-    this.bpm = Math.max(40, Math.min(300, bpm));
+    this.bpm = Math.max(40, Math.min(500, bpm));
   }
 
   getBPM(): number {
@@ -183,12 +184,70 @@ const main = (): void => {
   const soundSelect = document.getElementById('soundSelect') as HTMLSelectElement;
   const statusDisplay = document.getElementById('status') as HTMLElement;
 
-  // Update BPM
+  // Update BPM from slider
   bpmInput?.addEventListener('input', () => {
     const bpm = parseInt(bpmInput.value);
     metronom.setBPM(bpm);
     bpmDisplay.textContent = bpm.toString();
   });
+
+  // Make bpmDisplay editable and handle direct input
+  if (bpmDisplay) {
+    // Single keydown handler: allow digits/navigation, handle Enter to apply and prevent newline
+    bpmDisplay.addEventListener('keydown', (e) => {
+      // If Enter: apply BPM and prevent inserting newline
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyBpmFromDisplay();
+        (e.target as HTMLElement).blur();
+        return;
+      }
+
+      // Allow: digits, Backspace, Delete, Arrow keys, Home/End, Tab
+      const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab'];
+      if (allowedKeys.includes(e.key)) return;
+      // Allow numeric input (0-9)
+      if (/^[0-9]$/.test(e.key)) return;
+      // Prevent other input
+      e.preventDefault();
+    });
+
+    // Handle paste - only keep numbers
+    bpmDisplay.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || (window as any).clipboardData).getData('text');
+      const digits = text.replace(/\D/g, '');
+      if (digits.length > 0) {
+        document.execCommand('insertText', false, digits);
+      }
+    });
+
+    // When leaving the field, validate and apply
+    bpmDisplay.addEventListener('blur', () => {
+      applyBpmFromDisplay();
+    });
+  }
+
+  function applyBpmFromDisplay(): void {
+    if (!bpmDisplay) return;
+    const raw = bpmDisplay.textContent ? bpmDisplay.textContent.trim() : '';
+    const digits = raw.replace(/\D/g, '');
+    if (digits === '') {
+      // restore to current metronom BPM
+      bpmDisplay.textContent = metronom.getBPM().toString();
+      return;
+    }
+    let bpm = parseInt(digits, 10);
+    if (isNaN(bpm)) {
+      bpm = metronom.getBPM();
+    }
+    // clamp
+    bpm = Math.max(40, Math.min(500, bpm));
+    metronom.setBPM(bpm);
+    // sync slider
+    if (bpmInput) bpmInput.value = bpm.toString();
+    bpmDisplay.textContent = bpm.toString();
+  }
 
   // Time Signature selection - kann jetzt während des Abspielens geändert werden
   timeSignatureSelect?.addEventListener('change', () => {
@@ -222,7 +281,17 @@ const main = (): void => {
 
   // Beat change callback
   metronom.setOnBeatChange((beat: number) => {
-    updateBeatIndicators();
+    // Highlight active beat visually
+    const indicatorContainer = document.getElementById('beatIndicators');
+    if (!indicatorContainer) return;
+    const indicators = Array.from(indicatorContainer.children) as HTMLElement[];
+    indicators.forEach((el, i) => {
+      if (i === beat) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
   });
 
   // Initialize display
@@ -236,6 +305,20 @@ const main = (): void => {
     const indicatorContainer = document.getElementById('beatIndicators');
 
     if (indicatorContainer) {
+      // If indicators already exist, update count and accent classes without recreating DOM nodes
+      const existing = Array.from(indicatorContainer.children) as HTMLElement[];
+      if (existing.length === ts.beats) {
+        // update accent classes
+        existing.forEach((indicator, i) => {
+          indicator.className = 'beat-indicator';
+          if (ts.accentPattern[i] === 1) {
+            indicator.classList.add('accent');
+          }
+        });
+        return;
+      }
+
+      // otherwise (different count) recreate indicators
       indicatorContainer.innerHTML = '';
       for (let i = 0; i < ts.beats; i++) {
         const indicator = document.createElement('div');
