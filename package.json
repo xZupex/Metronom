@@ -4,9 +4,9 @@
   "description": "A TypeScript application",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
+    "dev": "bash dev.sh",
+    "build": "esbuild src/index.ts --bundle --outdir=dist && cp src/index.html dist/ && cp src/styles.css dist/",
+    "start": "python3 -m http.server 8000 -d dist",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src",
     "test": "jest"
@@ -19,6 +19,7 @@
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.20.0",
     "eslint": "^8.45.0",
     "jest": "^29.5.0",
     "prettier": "^3.0.0",

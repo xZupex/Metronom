@@ -1,12 +1,19 @@
 // Beispiel Entry Point
-const greeting = (name: string): string => {
+export const greeting = (name: string): string => {
   return `Hallo, ${name}! 👋`;
 };
 
 const main = (): void => {
-  console.log(greeting('TypeScript'));
-  console.log('🚀 Deine TypeScript App läuft!');
+  const button = document.getElementById('greetBtn');
+  const output = document.getElementById('output');
+
+  button?.addEventListener('click', () => {
+    if (output) {
+      output.textContent = greeting('User');
+      output.classList.add('show');
+    }
+  });
 };
 
-main();
+document.addEventListener('DOMContentLoaded', main);
 
